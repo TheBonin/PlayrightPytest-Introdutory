@@ -52,7 +52,32 @@ def test_mensagem_erro_cadastro(page):
     for key in INFO_SUBMIT:
         locator = input_register.locator_register.filter(has=page.get_by_placeholder(key)).locator(input_register.locator_field_alert)
         expect(locator).to_have_text("É campo obrigatório")
-    
+
+def test_nome_vazio(page):
+    input_register = page_input_register.InputRegister(page)
+    input_login = page_input_login.InputLogin(page)
+
+    page.goto("https://bugbank.netlify.app/")
+
+    input_login.access_register()
+
+    input_register.register_submit()
+
+    locator_name_warging = input_register.locator_register.filter(has=page.get_by_placeholder("Informe seu Nome")).locator(input_register.locator_field_alert)
+    expect(locator_name_warging).not_to_be_visible()
+
+    INFO_SUBMIT = {
+        "Informe seu e-mail" : "teste@teste.com.br",
+        "Informe sua senha" : "123123123",
+        "Informe a confirmação da senha" : "123123123"
+    }
+
+    input_register.fill_all_fields(INFO_SUBMIT)
+
+    input_register.register_submit()
+
+    expect(input_register.locator_name_alert).to_be_visible()
+
 def test_cadastro_feliz(page):
     #Selecionando a classe a ser utilizada passando page
     input_register = page_input_register.InputRegister(page)
@@ -80,28 +105,3 @@ def test_cadastro_feliz(page):
 
     #Validando que após o login o redirecionamento para a Home do site é feito
     expect(page).to_have_url("https://bugbank.netlify.app/home")
-        
-def test_cadastro_sem_info(page):
-    #Selecionando a classe e passando o parâmetro da página
-    input_register = page_input_register.InputRegister(page)
-    input_login = page_input_login.InputLogin(page)
-
-    #Acessando o link de teste
-    page.goto("https://bugbank.netlify.app/")
-
-    #Acessando a tela de cadastro
-    input_login.access_register()
-
-    #Fornecendo as informações para cadastro
-    INFO_SUBMIT = {
-        "Informe seu e-mail" : "teste@teste.com.br",
-        "Informe seu Nome" : "João Bonin",
-        "Informe sua senha" : "123123123",
-        "Informe a confirmação da senha" : "123123123"
-        }
-
-    #Preenchendo todos os campos para dar início aos testes
-    input_register.fill_all_fields(INFO_SUBMIT)
-
-    #Função que popula e remove campos 
-    input_register.assert_register_fields_missing(INFO_SUBMIT)

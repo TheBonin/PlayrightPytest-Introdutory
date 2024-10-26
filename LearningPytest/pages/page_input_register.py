@@ -17,25 +17,6 @@ class InputRegister:
             #Usa a key e seu valor para encontrar e preencher o campo
             self.locator_register.get_by_placeholder(key, exact = True).fill(value)
 
-    #Valida que a mensagem de erro seja ou não exibida
-    def assert_register_fields_missing(self,info : dict) -> None:
-        for key, value in info.items():
-            #Esvaziar somente um dos campos
-            self.locator_register.get_by_placeholder(key, exact = True).fill("")
-
-            #Tenta efetuar o cadastro
-            self.locator_register_submit.click()
-            
-            #Fecha o modal exibido para o nome
-            if key == "Informe seu Nome":
-                self.locator_name_alert.click()
-            
-            #Validar que a mensagem de "Conta cadastrada" não seja exibida
-            expect(self.locator_success_register).not_to_be_visible()
-
-            #Preenche todos os campos para a próxima iteração
-            self.locator_register.get_by_placeholder(key, exact = True).fill(value)
-
     def register_submit(self) -> None:
         self.locator_register_submit.click()
 
