@@ -4,8 +4,8 @@ class InputRegister:
     def __init__(self, page) -> None:
         #Transforma page em uma variável compartilhada pela classe dentro de 'self'
         self.page = page
-        self.locator_register = page.locator(".card__register")  
-        self.locator_field_alert = page.locator(".card__register .input__warging")
+        self.locator_register = page.locator(".card__register div")  
+        self.locator_field_alert = page.locator("p.input__warging")
         self.locator_success_register = page.locator("[id = modalText]")
         self.locator_success_button = page.locator("[id='btnCloseModal']")
         self.locator_register_submit = page.locator(".card__register [type=submit]")
@@ -40,7 +40,6 @@ class InputRegister:
         self.locator_register_submit.click()
 
     def complete_register(self,info : dict) -> None:
-
         #Usando a função de preencher espaços no cadastro
         self.fill_all_fields(info)
 
@@ -49,14 +48,3 @@ class InputRegister:
     
         #Fechando modal de conta criada
         self.locator_success_button.click()
-
-    def assert_register_fields_alert(self) -> None:
-        #locator a ser uzado futuramente
-        locator = self.locator_field_alert.all()
-
-        #Loop que será repetido quatro vezes
-        for i in range(4):
-            #Exclui o campo "Nome" da verificação
-            if i != 1:
-                #Verifica que em todos os espaços, o texto "É campo obrigatório" é exibido
-                expect(locator[i]).to_have_text("É campo obrigatório")

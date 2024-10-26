@@ -42,8 +42,16 @@ def test_mensagem_erro_cadastro(page):
     #Tentar fazer cadastro sem preencher os campos
     input_register.register_submit()
 
+    INFO_SUBMIT = [
+        "Informe seu e-mail",
+        "Informe sua senha",
+        "Informe a confirmação da senha"
+        ]
+
     #Validando as mensagens de erro para o Cadastro
-    input_register.assert_register_fields_alert()
+    for key in INFO_SUBMIT:
+        locator = input_register.locator_register.filter(has=page.get_by_placeholder(key)).locator(input_register.locator_field_alert)
+        expect(locator).to_have_text("É campo obrigatório")
     
 def test_cadastro_feliz(page):
     #Selecionando a classe a ser utilizada passando page
@@ -67,11 +75,8 @@ def test_cadastro_feliz(page):
     #Cadastro completo da conta
     input_register.complete_register(INFO_SUBMIT)
 
-    #Usando a função de preencher espaços no login
-    input_login.fill_all_fields(INFO_SUBMIT)
-
-    #Clicando para logar
-    input_login.login_submit()
+    #Usando a função de login completo
+    input_login.complete_login(INFO_SUBMIT)
 
     #Validando que após o login o redirecionamento para a Home do site é feito
     expect(page).to_have_url("https://bugbank.netlify.app/home")
